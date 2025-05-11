@@ -7,6 +7,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 // Pages
 import Index from "./pages/Index";
+import Features from "./pages/Features";
+import About from "./pages/About";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/auth/Login";
 import Dashboard from "./pages/workspace/Dashboard";
@@ -24,6 +26,8 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/features" element={<Features />} />
+          <Route path="/about" element={<About />} />
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/auth/login" element={<Login />} />
           <Route path="/auth/demo" element={<DemoRequest />} />
