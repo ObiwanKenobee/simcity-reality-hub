@@ -869,6 +869,45 @@ export type Database = {
         }
         Relationships: []
       }
+      organizations: {
+        Row: {
+          billing_email: string | null
+          created_at: string | null
+          id: string
+          name: string
+          paystack_ref: string | null
+          plan: string | null
+          subscription_active: boolean | null
+          subscription_end_date: string | null
+          subscription_start_date: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          billing_email?: string | null
+          created_at?: string | null
+          id?: string
+          name: string
+          paystack_ref?: string | null
+          plan?: string | null
+          subscription_active?: boolean | null
+          subscription_end_date?: string | null
+          subscription_start_date?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          billing_email?: string | null
+          created_at?: string | null
+          id?: string
+          name?: string
+          paystack_ref?: string | null
+          plan?: string | null
+          subscription_active?: boolean | null
+          subscription_end_date?: string | null
+          subscription_start_date?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       partner_applications: {
         Row: {
           company_name: string
@@ -953,6 +992,65 @@ export type Database = {
           status?: Database["public"]["Enums"]["partner_status"] | null
           updated_at?: string
           website_url?: string | null
+        }
+        Relationships: []
+      }
+      payment_history: {
+        Row: {
+          amount: number
+          currency: string | null
+          id: string
+          organization_id: string
+          paystack_ref: string | null
+          status: string | null
+          transaction_date: string | null
+        }
+        Insert: {
+          amount: number
+          currency?: string | null
+          id?: string
+          organization_id: string
+          paystack_ref?: string | null
+          status?: string | null
+          transaction_date?: string | null
+        }
+        Update: {
+          amount?: number
+          currency?: string | null
+          id?: string
+          organization_id?: string
+          paystack_ref?: string | null
+          status?: string | null
+          transaction_date?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_history_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      plan_features: {
+        Row: {
+          created_at: string | null
+          feature: string
+          id: string
+          plan: string
+        }
+        Insert: {
+          created_at?: string | null
+          feature: string
+          id?: string
+          plan: string
+        }
+        Update: {
+          created_at?: string | null
+          feature?: string
+          id?: string
+          plan?: string
         }
         Relationships: []
       }
@@ -1864,6 +1962,38 @@ export type Database = {
             columns: ["content_id"]
             isOneToOne: false
             referencedRelation: "trending_content"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_organizations: {
+        Row: {
+          created_at: string | null
+          id: string
+          organization_id: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          organization_id: string
+          role?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          organization_id?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_organizations_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
             referencedColumns: ["id"]
           },
         ]

@@ -8,14 +8,15 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 
-const Login: React.FC = () => {
+const Register: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [orgName, setOrgName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   
   const navigate = useNavigate();
   const location = useLocation();
-  const { signIn } = useAuth();
+  const { signUp } = useAuth();
   const { toast } = useToast();
   
   const redirectPath = new URLSearchParams(location.search).get('redirect') || '/workspace/demo/dashboard';
@@ -25,25 +26,25 @@ const Login: React.FC = () => {
     setIsLoading(true);
     
     try {
-      const { error } = await signIn(email, password);
+      const { error } = await signUp(email, password, orgName);
       
       if (error) {
         toast({
-          title: "Login failed",
-          description: "Invalid email or password.",
+          title: "Registration failed",
+          description: error.message,
           variant: "destructive"
         });
       } else {
         toast({
-          title: "Login successful",
-          description: "Welcome back to SimCity OS!"
+          title: "Registration successful",
+          description: "Your account has been created. Welcome to SimCity OS!"
         });
         navigate(redirectPath);
       }
     } catch (error) {
-      console.error('Login error:', error);
+      console.error('Registration error:', error);
       toast({
-        title: "Login failed",
+        title: "Registration failed",
         description: "An unexpected error occurred.",
         variant: "destructive"
       });
@@ -62,9 +63,9 @@ const Login: React.FC = () => {
               <span className="ml-2 text-xl font-semibold text-simcity-900">SimCity OS</span>
             </Link>
           </div>
-          <CardTitle className="text-2xl text-center">Sign in to your account</CardTitle>
+          <CardTitle className="text-2xl text-center">Create an account</CardTitle>
           <CardDescription className="text-center">
-            Enter your email and password to access your workspace
+            Sign up to manage your properties with SimCity OS
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit}>
@@ -81,17 +82,23 @@ const Login: React.FC = () => {
               />
             </div>
             <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <label htmlFor="password" className="text-sm font-medium">Password</label>
-                <Link to="/auth/forgot-password" className="text-xs text-simcity-600 hover:underline">
-                  Forgot password?
-                </Link>
-              </div>
+              <label htmlFor="password" className="text-sm font-medium">Password</label>
               <Input 
                 id="password" 
                 type="password" 
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                required 
+              />
+            </div>
+            <div className="space-y-2">
+              <label htmlFor="orgName" className="text-sm font-medium">Organization Name</label>
+              <Input 
+                id="orgName" 
+                type="text" 
+                placeholder="Your company name" 
+                value={orgName}
+                onChange={(e) => setOrgName(e.target.value)}
                 required 
               />
             </div>
@@ -102,12 +109,12 @@ const Login: React.FC = () => {
               className="w-full bg-simcity-600 hover:bg-simcity-700"
               disabled={isLoading}
             >
-              {isLoading ? "Signing in..." : "Sign in"}
+              {isLoading ? "Creating account..." : "Create account"}
             </Button>
             <div className="text-center text-sm">
-              Don't have an account?{' '}
-              <Link to="/auth/register" className="text-simcity-600 hover:underline">
-                Create an account
+              Already have an account?{' '}
+              <Link to="/auth/login" className="text-simcity-600 hover:underline">
+                Sign in
               </Link>
             </div>
           </CardFooter>
@@ -117,4 +124,4 @@ const Login: React.FC = () => {
   );
 };
 
-export default Login;
+export default Register;

@@ -2,11 +2,13 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Link, useLocation } from 'react-router-dom';
-import { Building, Menu, X } from 'lucide-react';
+import { Building, Menu, X, User } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
 
 const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const location = useLocation();
+  const { user, organization, signOut } = useAuth();
   
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -14,6 +16,10 @@ const Navbar: React.FC = () => {
 
   const isActive = (path: string) => {
     return location.pathname === path;
+  };
+
+  const handleSignOut = async () => {
+    await signOut();
   };
 
   return (
@@ -39,12 +45,27 @@ const Navbar: React.FC = () => {
           </div>
           
           <div className="hidden sm:ml-6 sm:flex sm:items-center sm:space-x-4">
-            <Button variant="outline" asChild>
-              <Link to="/auth/login">Sign In</Link>
-            </Button>
-            <Button className="bg-simcity-600 hover:bg-simcity-700" asChild>
-              <Link to="/auth/demo">Request Demo</Link>
-            </Button>
+            {user ? (
+              <>
+                <Button variant="outline" asChild>
+                  <Link to={`/workspace/${organization?.id || 'demo'}/dashboard`}>
+                    Dashboard
+                  </Link>
+                </Button>
+                <Button className="bg-simcity-600 hover:bg-simcity-700" onClick={handleSignOut}>
+                  Sign Out
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button variant="outline" asChild>
+                  <Link to="/auth/login">Sign In</Link>
+                </Button>
+                <Button className="bg-simcity-600 hover:bg-simcity-700" asChild>
+                  <Link to="/auth/demo">Request Demo</Link>
+                </Button>
+              </>
+            )}
           </div>
           
           <div className="flex items-center sm:hidden">
@@ -77,12 +98,27 @@ const Navbar: React.FC = () => {
           </div>
           <div className="pt-4 pb-3 border-t border-gray-200">
             <div className="space-y-2 px-4">
-              <Button variant="outline" className="w-full justify-center" asChild>
-                <Link to="/auth/login">Sign In</Link>
-              </Button>
-              <Button className="w-full justify-center bg-simcity-600 hover:bg-simcity-700" asChild>
-                <Link to="/auth/demo">Request Demo</Link>
-              </Button>
+              {user ? (
+                <>
+                  <Button variant="outline" className="w-full justify-center" asChild>
+                    <Link to={`/workspace/${organization?.id || 'demo'}/dashboard`}>
+                      Dashboard
+                    </Link>
+                  </Button>
+                  <Button className="w-full justify-center bg-simcity-600 hover:bg-simcity-700" onClick={handleSignOut}>
+                    Sign Out
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button variant="outline" className="w-full justify-center" asChild>
+                    <Link to="/auth/login">Sign In</Link>
+                  </Button>
+                  <Button className="w-full justify-center bg-simcity-600 hover:bg-simcity-700" asChild>
+                    <Link to="/auth/demo">Request Demo</Link>
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         </div>

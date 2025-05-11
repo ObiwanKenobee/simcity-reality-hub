@@ -1,10 +1,12 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { CheckIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import DemoRequestForm from '@/components/DemoRequestForm';
+import PaystackCheckout from '@/components/PaystackCheckout';
 
 interface PricingTierProps {
   name: string;
@@ -13,7 +15,7 @@ interface PricingTierProps {
   features: string[];
   highlighted?: boolean;
   buttonText: string;
-  buttonLink: string;
+  buttonAction: () => void;
 }
 
 const PricingTier: React.FC<PricingTierProps> = ({
@@ -23,7 +25,7 @@ const PricingTier: React.FC<PricingTierProps> = ({
   features,
   highlighted = false,
   buttonText,
-  buttonLink
+  buttonAction
 }) => {
   return (
     <div className={`flex flex-col p-6 rounded-2xl ${highlighted ? 'bg-gradient-to-br from-simcity-700 to-simcity-900 text-white border-2 border-teal-400 shadow-xl transform scale-105' : 'bg-white border border-gray-200'}`}>
@@ -49,15 +51,38 @@ const PricingTier: React.FC<PricingTierProps> = ({
       
       <Button 
         className={`w-full ${highlighted ? 'bg-teal-500 hover:bg-teal-600 text-white' : 'bg-simcity-600 hover:bg-simcity-700 text-white'}`} 
-        asChild
+        onClick={buttonAction}
       >
-        <Link to={buttonLink}>{buttonText}</Link>
+        {buttonText}
       </Button>
     </div>
   );
 };
 
 const Pricing: React.FC = () => {
+  // State for handling modal visibility
+  const [showDemoForm, setShowDemoForm] = useState(false);
+  const [demoFormPlan, setDemoFormPlan] = useState<'starter' | 'growth' | 'enterprise'>('growth');
+  
+  // State for handling Paystack checkout
+  const [showPaystack, setShowPaystack] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState<'starter' | 'growth' | 'enterprise'>('starter');
+  const [selectedAmount, setSelectedAmount] = useState(0);
+  
+  // Handler for opening the demo request form
+  const handleRequestDemo = (plan: 'starter' | 'growth' | 'enterprise') => {
+    setDemoFormPlan(plan);
+    setShowDemoForm(true);
+  };
+  
+  // Handler for starting the checkout process
+  const handleCheckout = (plan: 'starter' | 'growth' | 'enterprise', amount: number) => {
+    setSelectedPlan(plan);
+    setSelectedAmount(amount);
+    setShowPaystack(true);
+  };
+  
+  // Pricing tiers configuration
   const pricingTiers = [
     {
       name: 'Starter',
@@ -71,7 +96,7 @@ const Pricing: React.FC = () => {
         'Standard support'
       ],
       buttonText: 'Start with Starter',
-      buttonLink: '/auth/demo'
+      buttonAction: () => handleCheckout('starter', 49)
     },
     {
       name: 'Growth',
@@ -87,7 +112,7 @@ const Pricing: React.FC = () => {
       ],
       highlighted: true,
       buttonText: 'Request Demo',
-      buttonLink: '/auth/demo'
+      buttonAction: () => handleRequestDemo('growth')
     },
     {
       name: 'Enterprise',
@@ -102,7 +127,7 @@ const Pricing: React.FC = () => {
         'Dedicated support'
       ],
       buttonText: 'Contact Sales',
-      buttonLink: '/contact'
+      buttonAction: () => handleRequestDemo('enterprise')
     }
   ];
   
@@ -130,7 +155,7 @@ const Pricing: React.FC = () => {
                   features={tier.features}
                   highlighted={tier.highlighted}
                   buttonText={tier.buttonText}
-                  buttonLink={tier.buttonLink}
+                  buttonAction={tier.buttonAction}
                 />
               ))}
             </div>
@@ -140,8 +165,8 @@ const Pricing: React.FC = () => {
               <p className="text-gray-600 mb-6">
                 We offer tailored plans for unique property management needs.
               </p>
-              <Button variant="outline" size="lg" asChild>
-                <Link to="/contact">Contact Our Sales Team</Link>
+              <Button variant="outline" size="lg" onClick={() => handleRequestDemo('enterprise')}>
+                Contact Our Sales Team
               </Button>
             </div>
           </div>
@@ -149,6 +174,21 @@ const Pricing: React.FC = () => {
       </main>
       
       <Footer />
+      
+      {/* Demo Request Form Dialog */}
+      <DemoRequestForm 
+        isOpen={showDemoForm} 
+        onClose={() => setShowDemoForm(false)} 
+        planType={demoFormPlan}
+      />
+      
+      {/* Paystack Checkout */}
+      <PaystackCheckout
+        plan={selectedPlan}
+        amount={selectedAmount}
+        isOpen={showPaystack}
+        onClose={() => setShowPaystack(false)}
+      />
     </div>
   );
 };
