@@ -1,14 +1,19 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Building, Menu, X } from 'lucide-react';
 
 const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const location = useLocation();
   
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  const isActive = (path: string) => {
+    return location.pathname === path;
   };
 
   return (
@@ -21,13 +26,13 @@ const Navbar: React.FC = () => {
               <span className="ml-2 text-xl font-semibold text-simcity-900">SimCity OS</span>
             </Link>
             <div className="hidden sm:ml-10 sm:flex sm:space-x-4">
-              <Link to="/features" className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-simcity-600 transition">
+              <Link to="/features" className={`px-3 py-2 text-sm font-medium ${isActive('/features') ? 'text-simcity-600 border-b-2 border-simcity-600' : 'text-gray-600 hover:text-simcity-600'} transition`}>
                 Features
               </Link>
-              <Link to="/pricing" className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-simcity-600 transition">
+              <Link to="/pricing" className={`px-3 py-2 text-sm font-medium ${isActive('/pricing') ? 'text-simcity-600 border-b-2 border-simcity-600' : 'text-gray-600 hover:text-simcity-600'} transition`}>
                 Pricing
               </Link>
-              <Link to="/about" className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-simcity-600 transition">
+              <Link to="/about" className={`px-3 py-2 text-sm font-medium ${isActive('/about') ? 'text-simcity-600 border-b-2 border-simcity-600' : 'text-gray-600 hover:text-simcity-600'} transition`}>
                 About
               </Link>
             </div>
@@ -60,13 +65,13 @@ const Navbar: React.FC = () => {
       {isMenuOpen && (
         <div className="sm:hidden">
           <div className="pt-2 pb-3 space-y-1">
-            <Link to="/features" className="block px-3 py-2 text-base font-medium text-gray-600 hover:text-simcity-600 hover:bg-gray-50">
+            <Link to="/features" className={`block px-3 py-2 text-base font-medium ${isActive('/features') ? 'text-simcity-600 bg-simcity-50' : 'text-gray-600 hover:text-simcity-600 hover:bg-gray-50'}`}>
               Features
             </Link>
-            <Link to="/pricing" className="block px-3 py-2 text-base font-medium text-gray-600 hover:text-simcity-600 hover:bg-gray-50">
+            <Link to="/pricing" className={`block px-3 py-2 text-base font-medium ${isActive('/pricing') ? 'text-simcity-600 bg-simcity-50' : 'text-gray-600 hover:text-simcity-600 hover:bg-gray-50'}`}>
               Pricing
             </Link>
-            <Link to="/about" className="block px-3 py-2 text-base font-medium text-gray-600 hover:text-simcity-600 hover:bg-gray-50">
+            <Link to="/about" className={`block px-3 py-2 text-base font-medium ${isActive('/about') ? 'text-simcity-600 bg-simcity-50' : 'text-gray-600 hover:text-simcity-600 hover:bg-gray-50'}`}>
               About
             </Link>
           </div>

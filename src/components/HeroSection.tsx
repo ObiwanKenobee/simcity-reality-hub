@@ -24,7 +24,7 @@ const HeroSection: React.FC = () => {
                 </Link>
               </Button>
               <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10" asChild>
-                <Link to="/auth/login">Sign In</Link>
+                <Link to="/pricing">See Pricing</Link>
               </Button>
             </div>
           </div>
